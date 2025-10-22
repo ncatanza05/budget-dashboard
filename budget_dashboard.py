@@ -5,7 +5,7 @@ import time
 # --- CONFIG ---
 FILE_PATH = "Budget.xlsx"
 SHEET_NAME = "DashboardData"
-REFRESH_INTERVAL = 30  # seconds
+REFRESH_INTERVAL = 30  # seconds (5 minutes)
 # --------------
 
 # --- MOBILE STYLING ---
@@ -141,16 +141,17 @@ col3.metric("Total Remaining", f"${total_remaining:,.0f}")
 st.divider()
 
 # --- CATEGORY DISPLAY ---
-def get_color(val, budget):
+def color_remaining(val, budget):
     if budget == 0:
-        return "gray"
+        return "color:gray;"
     pct_left = val / budget
     if val <= 0:
-        return "red"
+        color = "red"
     elif pct_left < 0.2:
-        return "orange"
+        color = "orange"
     else:
-        return "green"
+        color = "green"
+    return f"color:{color}; font-weight:bold;"
 
 for category, group in df.groupby("Main Category"):
     with st.expander(f"📂 {category}", expanded=True):
@@ -180,33 +181,25 @@ for category, group in df.groupby("Main Category"):
 
         st.markdown("<hr style='margin:5px 0 8px 0;'>", unsafe_allow_html=True)
 
-        # --- STATIC FORMATTED TABLE (no index, full text, color-coded Remaining) ---
-        rows_html = ""
-        for _, r in group.iterrows():
-            color = get_color(r["Remaining"], r["Budget"])
-            rows_html += f"""
-                <tr>
-                    <td style='text-align:left;'>{r['Subcategory']}</td>
-                    <td style='text-align:right;'>${r['Budget']:,.0f}</td>
-                    <td style='text-align:right;'>${r['Spent']:,.0f}</td>
-                    <td style='text-align:right;color:{color};font-weight:600;'>${r['Remaining']:,.0f}</td>
-                </tr>
-            """
+        # --- STATIC FORMATTED TABLE (no index, full text) ---
+        display_df = group[["Subcategory", "Budget", "Spent", "Remaining"]].copy()
 
-        table_html = f"""
-        <table class='compact-table'>
-            <thead>
-                <tr>
-                    <th>Subcategory</th>
-                    <th>Budget</th>
-                    <th>Spent</th>
-                    <th>Remaining</th>
-                </tr>
-            </thead>
-            <tbody>
-                {rows_html}
-            </tbody>
-        </table>
-        """
+        # Format currency
+        for col in ["Budget", "Spent", "Remaining"]:
+            display_df[col] = display_df[col].apply(lambda x: f"${x:,.0f}")
 
-        st.markdown(table_html, unsafe_allow_html=True)
+        # Reset index to drop Excel row numbers
+        display_df.reset_index(drop=True, inplace=True)
+
+        # Render static table
+        st.markdown(
+            display_df.to_html(
+                index=False,
+                justify="center",
+                border=0,
+                col_space=70,
+                escape=False,
+                classes="compact-table"
+            ),
+            unsafe_allow_html=True
+        )
