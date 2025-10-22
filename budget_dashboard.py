@@ -97,6 +97,13 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+    <link rel="icon" href="https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/budget-dashboard/main/icon.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Budget Dashboard">
+""", unsafe_allow_html=True)
+
 # --- AUTO PAGE REFRESH EVERY 30 SECONDS ---
 st.markdown("""
     <script>
