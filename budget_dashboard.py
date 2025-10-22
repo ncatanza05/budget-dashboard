@@ -162,6 +162,8 @@ for category, group in df.groupby("Main Category"):
         )
 
 
-        st.dataframe(styled, width="stretch", hide_index=True)
+        # --- static table to prevent truncation ---
+        st.table(styled.data)
+
 
 
