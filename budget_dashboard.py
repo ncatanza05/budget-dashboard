@@ -98,7 +98,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("""
-    <link rel="icon" href="https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/budget-dashboard/main/icon.png">
+    <link rel="icon" href="https://raw.githubusercontent.com/ncatanza05/budget-dashboard/main/icon.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Budget Dashboard">
