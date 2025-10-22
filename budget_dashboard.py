@@ -2,77 +2,80 @@ import streamlit as st
 import pandas as pd
 import time
 
-# --- MOBILE STYLING (optimized for phones) ---
+# --- FINAL MOBILE STYLING ---
 st.markdown("""
     <style>
-        /* General page padding and width */
+        /* General container */
         .block-container {
             padding: 0.6rem 0.8rem !important;
             max-width: 900px;
             margin: auto;
         }
 
-        /* Center and shrink the title */
+        /* Title */
         h1 {
             text-align: center !important;
             font-size: 1.4rem !important;
-            margin-bottom: 0.2rem !important;
+            margin-bottom: 0.3rem !important;
         }
 
-        /* Metric cards (Totals & Subtotals) */
+        /* Metric cards (totals + subtotals) */
         div[data-testid="stMetric"] {
             text-align: center !important;
             margin: 0 !important;
             padding: 0 !important;
         }
-
         div[data-testid="stMetricLabel"] {
             font-size: 0.75rem !important;
-            color: #555 !important;
+            color: #444 !important;
         }
-
         div[data-testid="stMetricValue"] {
-            font-size: 1rem !important;
+            font-size: 0.95rem !important;
             font-weight: 600 !important;
         }
-
-        /* Fix metric layout (side-by-side, not stacked) */
         [data-testid="stHorizontalBlock"] > div {
             flex: 1 !important;
             min-width: 0 !important;
         }
 
-        /* Expander headers */
+        /* Expander header */
         div.streamlit-expanderHeader p {
             font-size: 0.9rem !important;
             font-weight: 600 !important;
         }
 
-        /* Compact table text */
-        table {
-            font-size: 0.75rem !important;
+        /* Subtotal spacing fix */
+        [data-testid="column"] > div:nth-child(1) {
+            margin-bottom: 0 !important;
         }
 
-        /* Compact horizontal rule spacing */
+        /* Table text compactness */
+        table {
+            font-size: 0.7rem !important;
+            width: 100% !important;
+            table-layout: fixed !important;
+            word-wrap: break-word !important;
+        }
+
+        /* Prevent horizontal scroll and cut-off */
+        .stDataFrame {
+            overflow-x: hidden !important;
+            margin-bottom: 0.3rem !important;
+        }
+        [data-testid="stDataFrameResizable"] {
+            overflow-x: hidden !important;
+        }
+        [data-testid="stDataFrame"] div {
+            overflow-x: hidden !important;
+        }
+
         hr {
             margin: 4px 0 !important;
             border: 0;
             border-top: 1px solid #ccc;
         }
-
-        /* Compact spacing after tables */
-        .stDataFrame {
-            margin-bottom: 0.4rem !important;
-        }
-
-        /* Prevent tables from scrolling horizontally on small screens */
-        [data-testid="stDataFrameResizable"] {
-            overflow-x: hidden !important;
-        }
     </style>
 """, unsafe_allow_html=True)
-
-
 
 # --- CONFIG ---
 FILE_PATH = "Budget.xlsx"
@@ -160,4 +163,5 @@ for category, group in df.groupby("Main Category"):
 
 
         st.dataframe(styled, width="stretch", hide_index=True)
+
 
