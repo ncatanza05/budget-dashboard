@@ -2,45 +2,76 @@ import streamlit as st
 import pandas as pd
 import time
 
-# --- MOBILE STYLING ---
+# --- MOBILE STYLING (optimized for phones) ---
 st.markdown("""
     <style>
-        /* Reduce padding and margins */
+        /* General page padding and width */
         .block-container {
-            padding-top: 0.5rem;
-            padding-bottom: 0.5rem;
-            padding-left: 0.8rem;
-            padding-right: 0.8rem;
+            padding: 0.6rem 0.8rem !important;
             max-width: 900px;
             margin: auto;
         }
 
-        /* Make metric cards smaller */
-        div[data-testid="stMetricValue"] {
-            font-size: 1.1rem !important;
+        /* Center and shrink the title */
+        h1 {
+            text-align: center !important;
+            font-size: 1.4rem !important;
+            margin-bottom: 0.2rem !important;
         }
 
-        /* Make metric labels smaller */
+        /* Metric cards (Totals & Subtotals) */
+        div[data-testid="stMetric"] {
+            text-align: center !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
         div[data-testid="stMetricLabel"] {
-            font-size: 0.8rem !important;
+            font-size: 0.75rem !important;
+            color: #555 !important;
         }
 
-        /* Shrink expander title font */
-        div.streamlit-expanderHeader p {
+        div[data-testid="stMetricValue"] {
             font-size: 1rem !important;
+            font-weight: 600 !important;
+        }
+
+        /* Fix metric layout (side-by-side, not stacked) */
+        [data-testid="stHorizontalBlock"] > div {
+            flex: 1 !important;
+            min-width: 0 !important;
+        }
+
+        /* Expander headers */
+        div.streamlit-expanderHeader p {
+            font-size: 0.9rem !important;
+            font-weight: 600 !important;
         }
 
         /* Compact table text */
         table {
-            font-size: 0.8rem !important;
+            font-size: 0.75rem !important;
         }
 
-        /* Reduce space under each table */
+        /* Compact horizontal rule spacing */
+        hr {
+            margin: 4px 0 !important;
+            border: 0;
+            border-top: 1px solid #ccc;
+        }
+
+        /* Compact spacing after tables */
         .stDataFrame {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem !important;
+        }
+
+        /* Prevent tables from scrolling horizontally on small screens */
+        [data-testid="stDataFrameResizable"] {
+            overflow-x: hidden !important;
         }
     </style>
 """, unsafe_allow_html=True)
+
 
 
 # --- CONFIG ---
@@ -129,3 +160,4 @@ for category, group in df.groupby("Main Category"):
 
 
         st.dataframe(styled, width="stretch", hide_index=True)
+
