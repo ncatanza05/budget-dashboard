@@ -211,7 +211,9 @@ for category, group in df.groupby("Main Category"):
 
         # Format other numeric columns (Budget, Spent) as currency AFTER coloring Remaining
         for col in ["Budget", "Spent"]:
-            display_df[col] = display_df[col].apply(lambda x: f"${x:,.0f}")
+            display_df[col] = display_df[col].apply(
+                lambda x: f"${pd.to_numeric(str(x).replace('$', '').replace(',', ''), errors='coerce') or 0:,.0f}"
+)
 
         # Render static table
         st.markdown(
