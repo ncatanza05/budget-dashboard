@@ -50,34 +50,25 @@ st.markdown("""
             font-weight: 600 !important;
         }
 
-        /* Compact responsive table styling */
+        /* Compact responsive centered table styling */
         .compact-table {
             width: 100% !important;
             border-collapse: collapse;
             table-layout: auto !important;
-            word-break: keep-all;
         }
         
         .compact-table th, .compact-table td {
             padding: 6px 4px;
             text-align: center;
+            vertical-align: middle;
             font-size: 0.75rem;
             white-space: nowrap;
         }
         
-        .compact-table th:nth-child(1),
-        .compact-table td:nth-child(1) {
+        .compact-table th:first-child,
+        .compact-table td:first-child {
             text-align: left;
-            white-space: normal; /* allow wrapping for long subcategory names */
-        }
-        
-        .compact-table th:nth-child(2),
-        .compact-table th:nth-child(3),
-        .compact-table th:nth-child(4),
-        .compact-table td:nth-child(2),
-        .compact-table td:nth-child(3),
-        .compact-table td:nth-child(4) {
-            text-align: right;
+            white-space: normal;
         }
         
         .compact-table tr:nth-child(even) {
@@ -146,16 +137,22 @@ for category, group in df.groupby("Main Category"):
         cat_remaining = group["Remaining"].sum()
 
         # Centered subtotal metrics (no clipping)
-        with st.container():
-            st.markdown(
-                "<div style='display:flex;overflow-x:auto;gap:10px;justify-content:center;'>",
-                unsafe_allow_html=True,
-            )
-            c1, c2, c3 = st.columns(3)
-            c1.metric("Subtotal Budget", f"${cat_budget:,.0f}")
-            c2.metric("Subtotal Spent", f"${cat_spent:,.0f}")
-            c3.metric("Subtotal Remaining", f"${cat_remaining:,.0f}")
-            st.markdown("</div>", unsafe_allow_html=True)
+        st.markdown("""
+        <div style="display:flex;justify-content:space-around;flex-wrap:wrap;text-align:center;margin-bottom:4px;">
+          <div style="flex:1;min-width:100px;">
+            <div style="font-size:0.8rem;color:#555;">Subtotal Budget</div>
+            <div style="font-weight:600;">${:,.0f}</div>
+          </div>
+          <div style="flex:1;min-width:100px;">
+            <div style="font-size:0.8rem;color:#555;">Subtotal Spent</div>
+            <div style="font-weight:600;">${:,.0f}</div>
+          </div>
+          <div style="flex:1;min-width:100px;">
+            <div style="font-size:0.8rem;color:#555;">Subtotal Remaining</div>
+            <div style="font-weight:600;">${:,.0f}</div>
+          </div>
+        </div>
+        """.format(cat_budget, cat_spent, cat_remaining), unsafe_allow_html=True)
 
         st.markdown("<hr style='margin:5px 0 8px 0;'>", unsafe_allow_html=True)
 
@@ -181,4 +178,5 @@ for category, group in df.groupby("Main Category"):
             ),
             unsafe_allow_html=True
         )
+
 
