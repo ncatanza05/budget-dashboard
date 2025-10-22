@@ -50,20 +50,38 @@ st.markdown("""
             font-weight: 600 !important;
         }
 
-        /* Compact fixed table styling */
+        /* Compact responsive table styling */
         .compact-table {
             width: 100% !important;
             border-collapse: collapse;
-            table-layout: fixed;
+            table-layout: auto !important;
+            word-break: keep-all;
         }
+        
         .compact-table th, .compact-table td {
-            padding: 4px 6px;
+            padding: 6px 4px;
             text-align: center;
-            word-wrap: break-word;
             font-size: 0.75rem;
-        }
-        .compact-table th {
             white-space: nowrap;
+        }
+        
+        .compact-table th:nth-child(1),
+        .compact-table td:nth-child(1) {
+            text-align: left;
+            white-space: normal; /* allow wrapping for long subcategory names */
+        }
+        
+        .compact-table th:nth-child(2),
+        .compact-table th:nth-child(3),
+        .compact-table th:nth-child(4),
+        .compact-table td:nth-child(2),
+        .compact-table td:nth-child(3),
+        .compact-table td:nth-child(4) {
+            text-align: right;
+        }
+        
+        .compact-table tr:nth-child(even) {
+            background-color: #f8f8f8;
         }
 
         hr {
@@ -163,3 +181,4 @@ for category, group in df.groupby("Main Category"):
             ),
             unsafe_allow_html=True
         )
+
