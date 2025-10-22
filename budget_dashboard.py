@@ -81,18 +81,18 @@ st.markdown("""
             border-top: 1px solid #ccc;
         }
 
-                /* Center-align all metric values and labels (totals + subtotals) */
-        [data-testid="stMetric"] {
-            text-align: center !important;
-            justify-content: center !important;
-        }
+        /* Force metric labels and values to center */
+        [data-testid="stMetricValue"], 
         [data-testid="stMetricLabel"] {
+            display: flex !important;
+            justify-content: center !important;
             text-align: center !important;
             width: 100% !important;
         }
-        [data-testid="stMetricValue"] {
+        
+        [data-testid="stMetricValue"] > div {
+            margin: 0 auto !important;
             text-align: center !important;
-            width: 100% !important;
         }
     </style>
 """, unsafe_allow_html=True)
@@ -192,6 +192,7 @@ for category, group in df.groupby("Main Category"):
             ),
             unsafe_allow_html=True
         )
+
 
 
 
