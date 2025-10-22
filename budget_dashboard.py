@@ -200,6 +200,8 @@ for category, group in df.groupby("Main Category"):
 
         # Render static table
 # --- Render table with colored Remaining values ---
+# --- STATIC FORMATTED TABLE (no index, full text, color-coded Remaining) ---
+
         def get_color(val, budget):
             if budget == 0:
                 return "gray"
@@ -211,7 +213,7 @@ for category, group in df.groupby("Main Category"):
             else:
                 return "green"
 
-        # Build HTML manually
+        # Build formatted copy for display
         rows_html = ""
         for _, r in group.iterrows():
             color = get_color(r["Remaining"], r["Budget"])
@@ -227,14 +229,22 @@ for category, group in df.groupby("Main Category"):
         table_html = f"""
         <table class='compact-table'>
             <thead>
-                <tr><th>Subcategory</th><th>Budget</th><th>Spent</th><th>Remaining</th></tr>
+                <tr>
+                    <th>Subcategory</th>
+                    <th>Budget</th>
+                    <th>Spent</th>
+                    <th>Remaining</th>
+                </tr>
             </thead>
-            <tbody>{rows_html}</tbody>
+            <tbody>
+                {rows_html}
+            </tbody>
         </table>
         """
 
-        from streamlit.components.v1 import html
-        html(table_html, height=200, scrolling=True)
+        # Render same way as before (clean and consistent)
+        st.markdown(table_html, unsafe_allow_html=True)
+
 
 
 
