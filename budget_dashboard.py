@@ -4,6 +4,21 @@ import time
 
 # --- FINAL MOBILE STYLING ---
 st.markdown("""
+/* Compact fixed table styling */
+.compact-table {
+    width: 100% !important;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+.compact-table th, .compact-table td {
+    padding: 4px 6px;
+    text-align: center;
+    word-wrap: break-word;
+    font-size: 0.75rem;
+}
+.compact-table th {
+    white-space: nowrap;
+}    
     <style>
         /* General container */
         .block-container {
@@ -162,12 +177,31 @@ for category, group in df.groupby("Main Category"):
         )
 
 
-        # --- formatted static table to prevent cut-off ---
+        # --- formatted static table without index or wrapping issues ---
         display_df = group[["Subcategory", "Budget", "Spent", "Remaining"]].copy()
-        display_df["Budget"] = display_df["Budget"].apply(lambda x: f"${x:,.0f}")
-        display_df["Spent"] = display_df["Spent"].apply(lambda x: f"${x:,.0f}")
-        display_df["Remaining"] = display_df["Remaining"].apply(lambda x: f"${x:,.0f}")
-        st.table(display_df)
+        
+        # Format currency cleanly
+        for col in ["Budget", "Spent", "Remaining"]:
+            display_df[col] = display_df[col].apply(lambda x: f"${x:,.0f}")
+        
+        # Reset index to remove the Excel row numbers
+        display_df.reset_index(drop=True, inplace=True)
+        
+        # Render a static, fixed-width table
+        st.markdown(
+            display_df.to_html(
+                index=False,
+                justify="center",
+                border=0,
+                col_space=70,
+                escape=False,
+                classes="compact-table"
+            ),
+            unsafe_allow_html=True
+        )
+
+
+
 
 
 
