@@ -191,6 +191,11 @@ for category, group in df.groupby("Main Category"):
         # Reset index to drop Excel row numbers
         display_df.reset_index(drop=True, inplace=True)
 
+        display_df["Remaining"] = display_df.apply(
+            lambda r: f"<span style='{color_remaining(r['Remaining'], r['Budget'])}'>${r['Remaining']:,.0f}</span>",
+            axis=1
+        )
+
         # Render static table
         st.markdown(
             display_df.to_html(
