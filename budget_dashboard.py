@@ -245,32 +245,41 @@ for category, group in df.groupby("Main Category"):
         )
 
         # --- PROGRESS BARS FOR EACH SUBCATEGORY ---
+        st.markdown("<div style='margin-top:6px;'></div>", unsafe_allow_html=True)
         for _, row in group.iterrows():
             sub = row["Subcategory"]
             budget = row["Budget"]
             spent = row["Spent"]
 
+            # Handle different cases
             if budget > 0:
-                pct_used = min(100, (spent / budget) * 100)
+                pct_used = (spent / budget) * 100
+            elif budget == 0 and spent > 0:
+                pct_used = 999  # effectively "infinite" overspend for display
             else:
-                # No budget defined
-                pct_used = 100 if spent > 0 else 0
+                pct_used = 0
 
+            # Cap bar fill at 100% but show true value in label
+            bar_fill = min(pct_used, 100)
             color = (
                 "#4CAF50" if pct_used < 80 else
                 "#FFC107" if pct_used < 100 else
                 "#F44336"
             )
+
             bar_html = f"""
             <div style="margin:4px 0;">
                 <div style="font-size:0.75rem;color:#333;">{sub}</div>
-                <div style="background-color:#ddd;border-radius:6px;height:8px;width:100%;">
-                    <div style="background-color:{color};width:{pct_used:.1f}%;height:8px;border-radius:6px;"></div>
+                <div style="background-color:#ddd;border-radius:6px;height:8px;width:100%;position:relative;">
+                    <div style="background-color:{color};width:{bar_fill:.1f}%;height:8px;border-radius:6px;"></div>
                 </div>
-                <div style="font-size:0.65rem;color:#666;text-align:right;">{pct_used:.1f}% used</div>
+                <div style="font-size:0.65rem;color:#666;text-align:right;">
+                    {"Over " if pct_used > 100 else ""}{pct_used:.1f}% used
+                </div>
             </div>
             """
             st.markdown(bar_html, unsafe_allow_html=True)
+
 
 
 
