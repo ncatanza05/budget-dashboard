@@ -233,7 +233,8 @@ for category, group in df.groupby("Main Category"):
         </table>
         """
 
-        st.markdown(table_html, unsafe_allow_html=True)
+        st.write(table_html, unsafe_allow_html=True)
+
 
 
 
