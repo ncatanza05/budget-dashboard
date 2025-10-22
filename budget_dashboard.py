@@ -2,6 +2,47 @@ import streamlit as st
 import pandas as pd
 import time
 
+# --- MOBILE STYLING ---
+st.markdown("""
+    <style>
+        /* Reduce padding and margins */
+        .block-container {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+            padding-left: 0.8rem;
+            padding-right: 0.8rem;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        /* Make metric cards smaller */
+        div[data-testid="stMetricValue"] {
+            font-size: 1.1rem !important;
+        }
+
+        /* Make metric labels smaller */
+        div[data-testid="stMetricLabel"] {
+            font-size: 0.8rem !important;
+        }
+
+        /* Shrink expander title font */
+        div.streamlit-expanderHeader p {
+            font-size: 1rem !important;
+        }
+
+        /* Compact table text */
+        table {
+            font-size: 0.8rem !important;
+        }
+
+        /* Reduce space under each table */
+        .stDataFrame {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+
 # --- CONFIG ---
 FILE_PATH = "Budget.xlsx"
 SHEET_NAME = "DashboardData"
@@ -85,5 +126,6 @@ for category, group in df.groupby("Main Category"):
             )
             .apply(style_remaining, subset=["Remaining"])
         )
+
 
         st.dataframe(styled, width="stretch", hide_index=True)
