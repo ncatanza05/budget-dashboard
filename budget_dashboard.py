@@ -199,17 +199,42 @@ for category, group in df.groupby("Main Category"):
         display_df.reset_index(drop=True, inplace=True)
 
         # Render static table
-        st.markdown(
-            display_df.to_html(
-                index=False,
-                justify="center",
-                border=0,
-                col_space=70,
-                escape=False,
-                classes="compact-table"
-            ),
-            unsafe_allow_html=True
-        )
+# --- Render table with colored Remaining values ---
+        def get_color(val, budget):
+            if budget == 0:
+                return "gray"
+            pct_left = val / budget
+            if val <= 0:
+                return "red"
+            elif pct_left < 0.2:
+                return "orange"
+            else:
+                return "green"
+
+        # Build HTML manually
+        rows_html = ""
+        for _, r in group.iterrows():
+            color = get_color(r["Remaining"], r["Budget"])
+            rows_html += f"""
+                <tr>
+                    <td style='text-align:left;'>{r['Subcategory']}</td>
+                    <td style='text-align:right;'>${r['Budget']:,.0f}</td>
+                    <td style='text-align:right;'>${r['Spent']:,.0f}</td>
+                    <td style='text-align:right;color:{color};font-weight:600;'>${r['Remaining']:,.0f}</td>
+                </tr>
+            """
+
+        table_html = f"""
+        <table class='compact-table'>
+            <thead>
+                <tr><th>Subcategory</th><th>Budget</th><th>Spent</th><th>Remaining</th></tr>
+            </thead>
+            <tbody>{rows_html}</tbody>
+        </table>
+        """
+
+        st.markdown(table_html, unsafe_allow_html=True)
+
 
 
 
