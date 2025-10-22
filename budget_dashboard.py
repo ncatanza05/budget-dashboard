@@ -263,32 +263,33 @@ for category, group in df.groupby("Main Category"):
                 """
                 st.markdown(bar_html, unsafe_allow_html=True)
 
-        # --- OVERALL SPENDING PROGRESS CHART ---
-        st.divider()
-        st.subheader("📊 Overall Spending Progress")
+# --- OVERALL SPENDING PROGRESS CHART ---
+st.divider()
+st.subheader("📊 Overall Spending Progress")
 
-        import numpy as np
-        import altair as alt
+import numpy as np
+import altair as alt
 
-        summary_df = pd.DataFrame({
-            "Category": ["Budget", "Spent"],
-            "Amount": [total_budget, total_spent]
-        })
+summary_df = pd.DataFrame({
+    "Category": ["Budget", "Spent"],
+    "Amount": [total_budget, total_spent]
+})
 
-        bar_chart = (
-            alt.Chart(summary_df)
-            .mark_bar(cornerRadiusTopLeft=6, cornerRadiusTopRight=6)
-            .encode(
-                x=alt.X("Category", sort=["Budget", "Spent"], axis=alt.Axis(labelAngle=0)),
-                y="Amount",
-                color=alt.Color(
-                    "Category",
-                    scale=alt.Scale(domain=["Budget", "Spent"], range=["#4CAF50", "#F44336"]),
-                    legend=None
-                ),
-                tooltip=["Category", "Amount"]
-            )
-            .properties(width="container", height=220)
-        )
+bar_chart = (
+    alt.Chart(summary_df)
+    .mark_bar(cornerRadiusTopLeft=6, cornerRadiusTopRight=6)
+    .encode(
+        x=alt.X("Category", sort=["Budget", "Spent"], axis=alt.Axis(labelAngle=0)),
+        y="Amount",
+        color=alt.Color(
+            "Category",
+            scale=alt.Scale(domain=["Budget", "Spent"], range=["#4CAF50", "#F44336"]),
+            legend=None
+        ),
+        tooltip=["Category", "Amount"]
+    )
+    .properties(width="container", height=220)
+)
 
-        st.altair_chart(bar_chart, use_container_width=True)
+st.altair_chart(bar_chart, use_container_width=True)
+
