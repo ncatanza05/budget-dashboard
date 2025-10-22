@@ -1,6 +1,17 @@
 import streamlit as st
 import pandas as pd
 import time
+import streamlit.runtime.scriptrunner.script_run_context as stc
+import threading
+
+def periodic_rerun(interval_sec=30):
+    def rerun():
+        st.rerun()
+    threading.Timer(interval_sec, rerun).start()
+
+if stc.get_script_run_ctx() is not None:
+    periodic_rerun(30)
+
 
 # --- CONFIG ---
 FILE_PATH = "Budget.xlsx"
