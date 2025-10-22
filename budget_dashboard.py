@@ -157,10 +157,8 @@ st.divider()
 
 # --- CATEGORY DISPLAY ---
 def color_remaining(val, budget):
-    # Avoid divide-by-zero and handle empty cells
     if budget == 0:
         return "color:gray;"
-
     try:
         pct_left = val / budget
     except Exception:
@@ -176,6 +174,7 @@ def color_remaining(val, budget):
         color = "green"    # comfortably within budget
 
     return f"color:{color}; font-weight:bold;"
+
 
 for category, group in df.groupby("Main Category"):
     with st.expander(f"📂 {category}", expanded=True):
