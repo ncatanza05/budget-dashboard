@@ -233,7 +233,9 @@ for category, group in df.groupby("Main Category"):
         </table>
         """
 
-        st.write(table_html, unsafe_allow_html=True)
+        from streamlit.components.v1 import html
+        html(table_html, height=200, scrolling=True)
+
 
 
 
