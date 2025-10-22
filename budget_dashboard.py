@@ -6,7 +6,7 @@ import streamlit as st
 
 st.set_page_config(
     page_title="Family Budget Dashboard",
-    page_icon="icon.png",  # local file path, not URL
+    page_icon="icon_v2.png",  # local file path, not URL
     layout="centered"
 )
 
