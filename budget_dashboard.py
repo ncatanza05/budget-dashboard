@@ -80,6 +80,20 @@ st.markdown("""
             border: 0;
             border-top: 1px solid #ccc;
         }
+
+                /* Center-align all metric values and labels (totals + subtotals) */
+        [data-testid="stMetric"] {
+            text-align: center !important;
+            justify-content: center !important;
+        }
+        [data-testid="stMetricLabel"] {
+            text-align: center !important;
+            width: 100% !important;
+        }
+        [data-testid="stMetricValue"] {
+            text-align: center !important;
+            width: 100% !important;
+        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -178,5 +192,6 @@ for category, group in df.groupby("Main Category"):
             ),
             unsafe_allow_html=True
         )
+
 
 
