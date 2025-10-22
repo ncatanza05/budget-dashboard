@@ -156,22 +156,25 @@ col3.metric("Total Remaining", f"${total_remaining:,.0f}")
 st.divider()
 
 # --- CATEGORY DISPLAY ---
-def color_remaining(val, budget, spent=None):
-    # Handle zero or missing budget gracefully
+def color_remaining(val, budget):
+    # Avoid divide-by-zero and handle empty cells
     if budget == 0:
-        if spent and spent > 0:
-            return "color:red; font-weight:bold;"  # spent money with no budget
-        else:
-            return "color:gray;"  # no budget, no spending
+        return "color:gray;"
 
-    # Normal cases
-    pct_left = val / budget
-    if val <= 0:
-        color = "red"
+    try:
+        pct_left = val / budget
+    except Exception:
+        return "color:gray;"
+
+    if val < 0:
+        color = "red"      # over budget
+    elif val == 0:
+        color = "gray"     # exactly on budget
     elif pct_left < 0.2:
-        color = "orange"
+        color = "orange"   # nearing budget
     else:
-        color = "green"
+        color = "green"    # comfortably within budget
+
     return f"color:{color}; font-weight:bold;"
 
 for category, group in df.groupby("Main Category"):
