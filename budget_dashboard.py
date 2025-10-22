@@ -217,10 +217,9 @@ for category, group in df.groupby("Main Category"):
         # Apply color formatting to Remaining column BEFORE currency formatting
         display_df["Remaining"] = display_df.apply(
             lambda r: (
-                (lambda rem, bud, sp: f"<span style='{color_remaining(rem, bud, sp)}'>${rem:,.0f}</span>")(
+                (lambda rem, bud: f"<span style='{color_remaining(rem, bud)}'>${rem:,.0f}</span>")(
                     pd.to_numeric(str(r["Remaining"]).replace("$", "").replace(",", ""), errors="coerce") or 0,
-                    pd.to_numeric(str(r["Budget"]).replace("$", "").replace(",", ""), errors="coerce") or 0,
-                    pd.to_numeric(str(r["Spent"]).replace("$", "").replace(",", ""), errors="coerce") or 0,
+                    pd.to_numeric(str(r["Budget"]).replace("$", "").replace(",", ""), errors="coerce") or 0
                 )
             ),
             axis=1
