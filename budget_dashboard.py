@@ -112,6 +112,12 @@ st.markdown("""
     <meta name="apple-mobile-web-app-title" content="Budget Dashboard">
 """, unsafe_allow_html=True)
 
+st.markdown("""
+    <!-- PWA manifest and theme color -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4CAF50">
+""", unsafe_allow_html=True)
+
 # --- AUTO PAGE REFRESH EVERY 30 SECONDS ---
 st.markdown("""
     <script>
