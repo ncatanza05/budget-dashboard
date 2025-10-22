@@ -2,16 +2,10 @@ import streamlit as st
 import pandas as pd
 import time
 
-# --- AUTO RERUN EVERY 30 SECONDS (WORKS ON ALL STREAMLIT VERSIONS) ---
-if hasattr(st, "autorefresh"):
-    st.autorefresh(interval=30 * 1000, key="datarefresh")
-elif hasattr(st, "experimental_autorefresh"):
-    st.experimental_autorefresh(interval=30 * 1000, key="datarefresh")
-
 # --- CONFIG ---
 FILE_PATH = "Budget.xlsx"
 SHEET_NAME = "DashboardData"
-REFRESH_INTERVAL = 30  # seconds (5 minutes)
+REFRESH_INTERVAL = 30  # seconds
 # --------------
 
 # --- MOBILE STYLING ---
@@ -62,7 +56,7 @@ st.markdown("""
             border-collapse: collapse;
             table-layout: auto !important;
         }
-        
+
         .compact-table th, .compact-table td {
             padding: 6px 4px;
             text-align: center;
@@ -70,13 +64,13 @@ st.markdown("""
             font-size: 0.75rem;
             white-space: nowrap;
         }
-        
+
         .compact-table th:first-child,
         .compact-table td:first-child {
             text-align: left;
             white-space: normal;
         }
-        
+
         .compact-table tr:nth-child(even) {
             background-color: #f8f8f8;
         }
@@ -113,7 +107,6 @@ st.markdown("""
     </script>
 """, unsafe_allow_html=True)
 
-
 # --- AUTO REFRESH ---
 if "last_refresh" not in st.session_state:
     st.session_state["last_refresh"] = time.time()
@@ -148,17 +141,16 @@ col3.metric("Total Remaining", f"${total_remaining:,.0f}")
 st.divider()
 
 # --- CATEGORY DISPLAY ---
-def color_remaining(val, budget):
+def get_color(val, budget):
     if budget == 0:
-        return "color:gray;"
+        return "gray"
     pct_left = val / budget
     if val <= 0:
-        color = "red"
+        return "red"
     elif pct_left < 0.2:
-        color = "orange"
+        return "orange"
     else:
-        color = "green"
-    return f"color:{color}; font-weight:bold;"
+        return "green"
 
 for category, group in df.groupby("Main Category"):
     with st.expander(f"📂 {category}", expanded=True):
@@ -188,32 +180,7 @@ for category, group in df.groupby("Main Category"):
 
         st.markdown("<hr style='margin:5px 0 8px 0;'>", unsafe_allow_html=True)
 
-        # --- STATIC FORMATTED TABLE (no index, full text) ---
-        display_df = group[["Subcategory", "Budget", "Spent", "Remaining"]].copy()
-
-        # Format currency
-        for col in ["Budget", "Spent", "Remaining"]:
-            display_df[col] = display_df[col].apply(lambda x: f"${x:,.0f}")
-
-        # Reset index to drop Excel row numbers
-        display_df.reset_index(drop=True, inplace=True)
-
-        # Render static table
-# --- Render table with colored Remaining values ---
-# --- STATIC FORMATTED TABLE (no index, full text, color-coded Remaining) ---
-
-        def get_color(val, budget):
-            if budget == 0:
-                return "gray"
-            pct_left = val / budget
-            if val <= 0:
-                return "red"
-            elif pct_left < 0.2:
-                return "orange"
-            else:
-                return "green"
-
-        # Build formatted copy for display
+        # --- STATIC FORMATTED TABLE (no index, full text, color-coded Remaining) ---
         rows_html = ""
         for _, r in group.iterrows():
             color = get_color(r["Remaining"], r["Budget"])
@@ -242,13 +209,4 @@ for category, group in df.groupby("Main Category"):
         </table>
         """
 
-        # Render same way as before (clean and consistent)
         st.markdown(table_html, unsafe_allow_html=True)
-
-
-
-
-
-
-
-
