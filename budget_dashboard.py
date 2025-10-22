@@ -97,6 +97,17 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# --- AUTO PAGE REFRESH EVERY 30 SECONDS ---
+st.markdown("""
+    <script>
+        function refreshPage() {
+            window.location.reload();
+        }
+        setTimeout(refreshPage, 30000);  // 30 seconds = 30000 ms
+    </script>
+""", unsafe_allow_html=True)
+
+
 # --- AUTO REFRESH ---
 if "last_refresh" not in st.session_state:
     st.session_state["last_refresh"] = time.time()
