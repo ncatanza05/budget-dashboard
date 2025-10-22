@@ -2,23 +2,14 @@ import streamlit as st
 import pandas as pd
 import time
 
-# --- FINAL MOBILE STYLING ---
+# --- CONFIG ---
+FILE_PATH = "Budget.xlsx"
+SHEET_NAME = "DashboardData"
+REFRESH_INTERVAL = 300  # seconds (5 minutes)
+# --------------
+
+# --- MOBILE STYLING ---
 st.markdown("""
-/* Compact fixed table styling */
-.compact-table {
-    width: 100% !important;
-    border-collapse: collapse;
-    table-layout: fixed;
-}
-.compact-table th, .compact-table td {
-    padding: 4px 6px;
-    text-align: center;
-    word-wrap: break-word;
-    font-size: 0.75rem;
-}
-.compact-table th {
-    white-space: nowrap;
-}    
     <style>
         /* General container */
         .block-container {
@@ -59,29 +50,20 @@ st.markdown("""
             font-weight: 600 !important;
         }
 
-        /* Subtotal spacing fix */
-        [data-testid="column"] > div:nth-child(1) {
-            margin-bottom: 0 !important;
-        }
-
-        /* Table text compactness */
-        table {
-            font-size: 0.7rem !important;
+        /* Compact fixed table styling */
+        .compact-table {
             width: 100% !important;
-            table-layout: fixed !important;
-            word-wrap: break-word !important;
+            border-collapse: collapse;
+            table-layout: fixed;
         }
-
-        /* Prevent horizontal scroll and cut-off */
-        .stDataFrame {
-            overflow-x: hidden !important;
-            margin-bottom: 0.3rem !important;
+        .compact-table th, .compact-table td {
+            padding: 4px 6px;
+            text-align: center;
+            word-wrap: break-word;
+            font-size: 0.75rem;
         }
-        [data-testid="stDataFrameResizable"] {
-            overflow-x: hidden !important;
-        }
-        [data-testid="stDataFrame"] div {
-            overflow-x: hidden !important;
+        .compact-table th {
+            white-space: nowrap;
         }
 
         hr {
@@ -92,26 +74,27 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- CONFIG ---
-FILE_PATH = "Budget.xlsx"
-SHEET_NAME = "DashboardData"
-# --------------
+# --- AUTO REFRESH ---
+if "last_refresh" not in st.session_state:
+    st.session_state["last_refresh"] = time.time()
+if time.time() - st.session_state["last_refresh"] > REFRESH_INTERVAL:
+    st.session_state["last_refresh"] = time.time()
+    st.rerun()
 
-st.set_page_config(page_title="Family Budget Dashboard", page_icon="💰", layout="centered")
-
+# --- LOAD DATA ---
 @st.cache_data
 def load_data():
     return pd.read_excel(FILE_PATH, sheet_name=SHEET_NAME)
 
 df = load_data()
-
-# make sure numeric
 df["Budget"] = pd.to_numeric(df["Budget"], errors="coerce").fillna(0)
 df["Spent"] = pd.to_numeric(df["Spent"], errors="coerce").fillna(0)
 df["Remaining"] = df["Budget"] - df["Spent"]
 
+# --- PAGE TITLE ---
 st.title("💰 Family Budget Dashboard")
 
+# --- TOTALS ---
 total_budget = df["Budget"].sum()
 total_spent = df["Spent"].sum()
 total_remaining = df["Remaining"].sum()
@@ -119,23 +102,11 @@ total_remaining = df["Remaining"].sum()
 col1, col2, col3 = st.columns(3)
 col1.metric("Total Budget", f"${total_budget:,.0f}")
 col2.metric("Total Spent", f"${total_spent:,.0f}")
-col3.metric("Remaining", f"${total_remaining:,.0f}")
+col3.metric("Total Remaining", f"${total_remaining:,.0f}")
 
-# --- GROUPED DISPLAY ---
 st.divider()
 
-# Set refresh interval in seconds (e.g., 300 = 5 minutes)
-REFRESH_INTERVAL = 300
-
-# Force refresh after each interval
-st_autorefresh = st.empty()
-if "last_refresh" not in st.session_state:
-    st.session_state["last_refresh"] = time.time()
-
-if time.time() - st.session_state["last_refresh"] > REFRESH_INTERVAL:
-    st.session_state["last_refresh"] = time.time()
-    st.rerun()
-
+# --- CATEGORY DISPLAY ---
 def color_remaining(val, budget):
     if budget == 0:
         return "color:gray;"
@@ -151,43 +122,36 @@ def color_remaining(val, budget):
 for category, group in df.groupby("Main Category"):
     with st.expander(f"📂 {category}", expanded=True):
 
+        # --- SUBTOTALS ---
         cat_budget = group["Budget"].sum()
         cat_spent = group["Spent"].sum()
         cat_remaining = group["Remaining"].sum()
 
-        c1, c2, c3 = st.columns(3)
-        c1.metric("Subtotal Budget", f"${cat_budget:,.0f}")
-        c2.metric("Subtotal Spent", f"${cat_spent:,.0f}")
-        c3.metric("Subtotal Remaining", f"${cat_remaining:,.0f}")
-
-        st.markdown("<hr style='margin:5px 0 10px 0;'>", unsafe_allow_html=True)
-
-        def style_remaining(col):
-            return [
-                color_remaining(v, b)
-                for v, b in zip(group["Remaining"], group["Budget"])
-            ]
-
-        styled = (
-            group[["Subcategory", "Budget", "Spent", "Remaining"]]
-            .style.format(
-                {"Budget": "${:,.0f}", "Spent": "${:,.0f}", "Remaining": "${:,.0f}"}
+        # Centered subtotal metrics (no clipping)
+        with st.container():
+            st.markdown(
+                "<div style='display:flex;overflow-x:auto;gap:10px;justify-content:center;'>",
+                unsafe_allow_html=True,
             )
-            .apply(style_remaining, subset=["Remaining"])
-        )
+            c1, c2, c3 = st.columns(3)
+            c1.metric("Subtotal Budget", f"${cat_budget:,.0f}")
+            c2.metric("Subtotal Spent", f"${cat_spent:,.0f}")
+            c3.metric("Subtotal Remaining", f"${cat_remaining:,.0f}")
+            st.markdown("</div>", unsafe_allow_html=True)
 
+        st.markdown("<hr style='margin:5px 0 8px 0;'>", unsafe_allow_html=True)
 
-        # --- formatted static table without index or wrapping issues ---
+        # --- STATIC FORMATTED TABLE (no index, full text) ---
         display_df = group[["Subcategory", "Budget", "Spent", "Remaining"]].copy()
-        
-        # Format currency cleanly
+
+        # Format currency
         for col in ["Budget", "Spent", "Remaining"]:
             display_df[col] = display_df[col].apply(lambda x: f"${x:,.0f}")
-        
-        # Reset index to remove the Excel row numbers
+
+        # Reset index to drop Excel row numbers
         display_df.reset_index(drop=True, inplace=True)
-        
-        # Render a static, fixed-width table
+
+        # Render static table
         st.markdown(
             display_df.to_html(
                 index=False,
@@ -199,11 +163,3 @@ for category, group in df.groupby("Main Category"):
             ),
             unsafe_allow_html=True
         )
-
-
-
-
-
-
-
-
