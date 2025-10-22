@@ -156,15 +156,16 @@ col3.metric("Total Remaining", f"${total_remaining:,.0f}")
 st.divider()
 
 # --- CATEGORY DISPLAY ---
-def color_remaining(val, budget):
-    # Avoid divide-by-zero and handle empty cells
+def color_remaining(val, budget, spent=None):
+    # Handle zero or missing budget gracefully
     if budget == 0:
-        return "color:gray;"
-    try:
-        pct_left = val / budget
-    except Exception:
-        return "color:gray;"
+        if spent and spent > 0:
+            return "color:red; font-weight:bold;"  # spent money with no budget
+        else:
+            return "color:gray;"  # no budget, no spending
 
+    # Normal cases
+    pct_left = val / budget
     if val <= 0:
         color = "red"
     elif pct_left < 0.2:
@@ -214,15 +215,14 @@ for category, group in df.groupby("Main Category"):
         # Apply color formatting to Remaining column BEFORE currency formatting
         display_df["Remaining"] = display_df.apply(
             lambda r: (
-                # safely convert to numbers
-                (lambda rem, bud: f"<span style='{color_remaining(rem, bud)}'>${rem:,.0f}</span>")(
+                (lambda rem, bud, sp: f"<span style='{color_remaining(rem, bud, sp)}'>${rem:,.0f}</span>")(
                     pd.to_numeric(str(r["Remaining"]).replace("$", "").replace(",", ""), errors="coerce") or 0,
-                    pd.to_numeric(str(r["Budget"]).replace("$", "").replace(",", ""), errors="coerce") or 0
+                    pd.to_numeric(str(r["Budget"]).replace("$", "").replace(",", ""), errors="coerce") or 0,
+                    pd.to_numeric(str(r["Spent"]).replace("$", "").replace(",", ""), errors="coerce") or 0,
                 )
             ),
             axis=1
         )
-
 
         # Format other numeric columns (Budget, Spent) as currency AFTER coloring Remaining
         for col in ["Budget", "Spent"]:
@@ -251,17 +251,26 @@ for category, group in df.groupby("Main Category"):
 
             if budget > 0:
                 pct_used = min(100, (spent / budget) * 100)
-                color = "#4CAF50" if pct_used < 80 else "#FFC107" if pct_used < 100 else "#F44336"
-                bar_html = f"""
-                <div style="margin:4px 0;">
-                    <div style="font-size:0.75rem;color:#333;">{sub}</div>
-                    <div style="background-color:#ddd;border-radius:6px;height:8px;width:100%;">
-                        <div style="background-color:{color};width:{pct_used:.1f}%;height:8px;border-radius:6px;"></div>
-                    </div>
-                    <div style="font-size:0.65rem;color:#666;text-align:right;">{pct_used:.1f}% used</div>
+            else:
+                # No budget defined
+                pct_used = 100 if spent > 0 else 0
+
+            color = (
+                "#4CAF50" if pct_used < 80 else
+                "#FFC107" if pct_used < 100 else
+                "#F44336"
+            )
+            bar_html = f"""
+            <div style="margin:4px 0;">
+                <div style="font-size:0.75rem;color:#333;">{sub}</div>
+                <div style="background-color:#ddd;border-radius:6px;height:8px;width:100%;">
+                    <div style="background-color:{color};width:{pct_used:.1f}%;height:8px;border-radius:6px;"></div>
                 </div>
-                """
-                st.markdown(bar_html, unsafe_allow_html=True)
+                <div style="font-size:0.65rem;color:#666;text-align:right;">{pct_used:.1f}% used</div>
+            </div>
+            """
+            st.markdown(bar_html, unsafe_allow_html=True)
+
 
 
 
