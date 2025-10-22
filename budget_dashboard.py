@@ -2,6 +2,14 @@ import streamlit as st
 import pandas as pd
 import time
 
+import streamlit as st
+
+st.set_page_config(
+    page_title="Family Budget Dashboard",
+    page_icon="icon.png",  # local file path, not URL
+    layout="centered"
+)
+
 # --- CONFIG ---
 FILE_PATH = "Budget.xlsx"
 SHEET_NAME = "DashboardData"
