@@ -196,11 +196,16 @@ for category, group in df.groupby("Main Category"):
         # Reset index to drop Excel row numbers
         display_df.reset_index(drop=True, inplace=True)
 
+        # Apply color formatting to Remaining column BEFORE currency formatting
         display_df["Remaining"] = display_df.apply(
-            lambda r: f"<span style='{color_remaining(float(r['Remaining']), float(r['Budget']))}'>${float(r['Remaining']):,.0f}</span>"
-            if pd.notna(r["Remaining"]) and pd.notna(r["Budget"]) else "$0",
+            lambda r: f"<span style='{color_remaining(r['Remaining'], r['Budget'])}'>${r['Remaining']:,.0f}</span>"
+            if r["Budget"] != 0 else "<span style='color:gray;'>$0</span>",
             axis=1
         )
+
+        # Format other numeric columns (Budget, Spent) as currency AFTER coloring Remaining
+        for col in ["Budget", "Spent"]:
+            display_df[col] = display_df[col].apply(lambda x: f"${x:,.0f}")
 
         # Render static table
         st.markdown(
@@ -214,3 +219,4 @@ for category, group in df.groupby("Main Category"):
             ),
             unsafe_allow_html=True
         )
+
