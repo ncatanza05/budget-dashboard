@@ -198,8 +198,12 @@ for category, group in df.groupby("Main Category"):
 
         # Apply color formatting to Remaining column BEFORE currency formatting
         display_df["Remaining"] = display_df.apply(
-            lambda r: f"<span style='{color_remaining(r['Remaining'], r['Budget'])}'>${r['Remaining']:,.0f}</span>"
-            if r["Budget"] != 0 else "<span style='color:gray;'>$0</span>",
+            lambda r: (
+                f"<span style='{color_remaining(float(r['Remaining'] or 0), float(r['Budget'] or 0))}'>"
+                f"${float(r['Remaining'] or 0):,.0f}</span>"
+            )
+            if pd.notna(r["Remaining"]) and pd.notna(r["Budget"])
+            else "<span style='color:gray;'>$0</span>",
             axis=1
         )
 
