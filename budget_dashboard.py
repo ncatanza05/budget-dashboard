@@ -105,8 +105,9 @@ if time.time() - st.session_state["last_refresh"] > REFRESH_INTERVAL:
     st.rerun()
 
 # --- LOAD DATA ---
-@st.cache_data
+@st.cache_data(ttl=30, show_spinner=False)
 def load_data():
+    """Always reload Excel every 30s if changed on GitHub"""
     return pd.read_excel(FILE_PATH, sheet_name=SHEET_NAME)
 
 df = load_data()
