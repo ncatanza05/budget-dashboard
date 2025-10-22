@@ -2,10 +2,11 @@ import streamlit as st
 import pandas as pd
 import time
 
-# --- AUTO RELOAD EVERY 30 SECONDS (OFFICIAL STREAMLIT METHOD) ---
-st_autorefresh = st.experimental_rerun if hasattr(st, "experimental_rerun") else None
-st_autorefresh = st_autorefresh or (lambda: None)
-st.experimental_autorefresh(interval=30 * 1000, key="datarefresh")
+# --- AUTO RERUN EVERY 30 SECONDS (WORKS ON ALL STREAMLIT VERSIONS) ---
+if hasattr(st, "autorefresh"):
+    st.autorefresh(interval=30 * 1000, key="datarefresh")
+elif hasattr(st, "experimental_autorefresh"):
+    st.experimental_autorefresh(interval=30 * 1000, key="datarefresh")
 
 # --- CONFIG ---
 FILE_PATH = "Budget.xlsx"
