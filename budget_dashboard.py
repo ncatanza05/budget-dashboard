@@ -197,7 +197,8 @@ for category, group in df.groupby("Main Category"):
         display_df.reset_index(drop=True, inplace=True)
 
         display_df["Remaining"] = display_df.apply(
-            lambda r: f"<span style='{color_remaining(r['Remaining'], r['Budget'])}'>${r['Remaining']:,.0f}</span>",
+            lambda r: f"<span style='{color_remaining(float(r['Remaining']), float(r['Budget']))}'>${float(r['Remaining']):,.0f}</span>"
+            if pd.notna(r["Remaining"]) and pd.notna(r["Budget"]) else "$0",
             axis=1
         )
 
