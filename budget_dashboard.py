@@ -5,7 +5,7 @@ import time
 # --- CONFIG ---
 FILE_PATH = "Budget.xlsx"
 SHEET_NAME = "DashboardData"
-REFRESH_INTERVAL = 300  # seconds (5 minutes)
+REFRESH_INTERVAL = 30  # seconds (5 minutes)
 # --------------
 
 # --- MOBILE STYLING ---
