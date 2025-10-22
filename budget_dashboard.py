@@ -243,3 +243,23 @@ for category, group in df.groupby("Main Category"):
             unsafe_allow_html=True
         )
 
+        # --- PROGRESS BARS FOR EACH SUBCATEGORY ---
+        for _, row in group.iterrows():
+            sub = row["Subcategory"]
+            budget = row["Budget"]
+            spent = row["Spent"]
+
+            if budget > 0:
+                pct_used = min(100, (spent / budget) * 100)
+                color = "#4CAF50" if pct_used < 80 else "#FFC107" if pct_used < 100 else "#F44336"
+                bar_html = f"""
+                <div style="margin:4px 0;">
+                    <div style="font-size:0.75rem;color:#333;">{sub}</div>
+                    <div style="background-color:#ddd;border-radius:6px;height:8px;width:100%;">
+                        <div style="background-color:{color};width:{pct_used:.1f}%;height:8px;border-radius:6px;"></div>
+                    </div>
+                    <div style="font-size:0.65rem;color:#666;text-align:right;">{pct_used:.1f}% used</div>
+                </div>
+                """
+                st.markdown(bar_html, unsafe_allow_html=True)
+
