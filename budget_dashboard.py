@@ -112,10 +112,20 @@ st.markdown("""
     <meta name="apple-mobile-web-app-title" content="Budget Dashboard">
 """, unsafe_allow_html=True)
 
+# --- PWA + Branding Overrides ---
 st.markdown("""
-    <!-- PWA manifest and theme color -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#4CAF50">
+<!-- ✅ Custom branding override -->
+<link rel="apple-touch-icon" sizes="512x512"
+      href="https://raw.githubusercontent.com/ncatanza05/budget-dashboard/main/icon_v2.png?v=2">
+<meta name="apple-mobile-web-app-title" content="Budget">
+<meta name="application-name" content="Budget">
+<link rel="icon" type="image/png"
+      href="https://raw.githubusercontent.com/ncatanza05/budget-dashboard/main/icon_v2.png?v=2">
+
+<!-- ✅ Progressive Web App manifest -->
+<link rel="manifest"
+      href="https://raw.githubusercontent.com/ncatanza05/budget-dashboard/main/manifest.json?v=2">
+<meta name="theme-color" content="#4CAF50">
 """, unsafe_allow_html=True)
 
 # --- AUTO PAGE REFRESH EVERY 30 SECONDS ---
