@@ -162,8 +162,14 @@ for category, group in df.groupby("Main Category"):
         )
 
 
-        # --- static table to prevent truncation ---
-        st.table(styled.data)
+        # --- formatted static table to prevent cut-off ---
+        display_df = group[["Subcategory", "Budget", "Spent", "Remaining"]].copy()
+        display_df["Budget"] = display_df["Budget"].apply(lambda x: f"${x:,.0f}")
+        display_df["Spent"] = display_df["Spent"].apply(lambda x: f"${x:,.0f}")
+        display_df["Remaining"] = display_df["Remaining"].apply(lambda x: f"${x:,.0f}")
+        st.table(display_df)
+
+
 
 
 
