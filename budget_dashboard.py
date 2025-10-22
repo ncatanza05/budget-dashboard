@@ -142,9 +142,14 @@ st.divider()
 
 # --- CATEGORY DISPLAY ---
 def color_remaining(val, budget):
+    # Avoid divide-by-zero and handle empty cells
     if budget == 0:
         return "color:gray;"
-    pct_left = val / budget
+    try:
+        pct_left = val / budget
+    except Exception:
+        return "color:gray;"
+
     if val <= 0:
         color = "red"
     elif pct_left < 0.2:
