@@ -106,10 +106,12 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("""
-    <link rel="icon" href="https://raw.githubusercontent.com/ncatanza05/budget-dashboard/main/icon.png">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Budget Dashboard">
+<link rel="manifest" href="https://raw.githubusercontent.com/ncatanza05/budget-dashboard/main/manifest.json?v=3">
+<meta name="theme-color" content="#4CAF50">
+<link rel="apple-touch-icon" sizes="512x512" href="https://raw.githubusercontent.com/ncatanza05/budget-dashboard/main/icon_v2.png?v=3">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Budget">
 """, unsafe_allow_html=True)
 
 st.markdown("""

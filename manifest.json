@@ -1,14 +1,14 @@
 {
   "name": "Family Budget Dashboard",
   "short_name": "Budget",
-  "start_url": ".",
+  "start_url": "https://catanzariti-family-budget-dashboard.streamlit.app/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#4CAF50",
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "icon_v2.png",
+      "src": "https://raw.githubusercontent.com/ncatanza05/budget-dashboard/main/icon_v2.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
