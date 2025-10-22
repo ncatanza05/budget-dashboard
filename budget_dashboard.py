@@ -190,7 +190,7 @@ for category, group in df.groupby("Main Category"):
         display_df = group[["Subcategory", "Budget", "Spent", "Remaining"]].copy()
 
         # Format currency
-        for col in ["Budget", "Spent", "Remaining"]:
+        for col in ["Budget", "Spent"]:
             display_df[col] = display_df[col].apply(lambda x: f"${x:,.0f}")
 
         # Reset index to drop Excel row numbers
