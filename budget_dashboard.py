@@ -199,13 +199,15 @@ for category, group in df.groupby("Main Category"):
         # Apply color formatting to Remaining column BEFORE currency formatting
         display_df["Remaining"] = display_df.apply(
             lambda r: (
-                f"<span style='{color_remaining(float(r['Remaining'] or 0), float(r['Budget'] or 0))}'>"
-                f"${float(r['Remaining'] or 0):,.0f}</span>"
-            )
-            if pd.notna(r["Remaining"]) and pd.notna(r["Budget"])
-            else "<span style='color:gray;'>$0</span>",
+                # safely convert to numbers
+                (lambda rem, bud: f"<span style='{color_remaining(rem, bud)}'>${rem:,.0f}</span>")(
+                    pd.to_numeric(str(r["Remaining"]).replace("$", "").replace(",", ""), errors="coerce") or 0,
+                    pd.to_numeric(str(r["Budget"]).replace("$", "").replace(",", ""), errors="coerce") or 0
+                )
+            ),
             axis=1
         )
+
 
         # Format other numeric columns (Budget, Spent) as currency AFTER coloring Remaining
         for col in ["Budget", "Spent"]:
